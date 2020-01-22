@@ -3,21 +3,24 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MensajesController } from './mensajes/mensajes.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MensajesService } from './mensajes/mensajes.service';
+import { Mensaje } from './mensajes/entities/mensaje.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: process.env.MYSQLSERVER || '127.0.0.1',
       port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'test',
-      entities: [],
+      username: process.env.MYSQLUSER || 'root',
+      password: process.env.MYSQLPASS || 'teste',
+      database: process.env.MYSQLDATABASE,
+      entities: [__dirname + "/**/*.entity{.ts,.js}"],
       synchronize: true,
     }),
+    TypeOrmModule.forFeature([Mensaje])
   ],
   controllers: [AppController, MensajesController],
-  providers: [AppService],
+  providers: [AppService, MensajesService],
 })
 export class AppModule { }
